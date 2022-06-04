@@ -26,7 +26,7 @@ connection.once("open", () => console.log("connected to mongoDB"));
 
 app.get("/test",async (req, res) => {
     try{
-        return res.json({status:true})
+        return res.json({status:true,data : "Server working perfectly fine."})
     }
     catch(error){
         console.log(error)
