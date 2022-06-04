@@ -22,6 +22,7 @@ mongoose.connect(process.env.MONGODB,{
 })
 
 const connection = mongoose.connection
+connection.once("open", () => console.log("connected to mongoDB"));
 
 app.get("/test",async (req, res) => {
     try{
@@ -32,5 +33,7 @@ app.get("/test",async (req, res) => {
         return res.json({status:true, error})
     }
 })
+
+app.use("/api/student", require("./routes/student/routes"))
 
 server.listen(port, () => console.log(`server runs at ${port}`))
