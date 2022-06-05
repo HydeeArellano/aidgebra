@@ -35,5 +35,6 @@ app.get("/test",async (req, res) => {
 })
 
 app.use("/api/student", require("./routes/student/routes"))
+app.use("/api/admin", require("./routes/admin/routes"))
 
 server.listen(port, () => console.log(`server runs at ${port}`))

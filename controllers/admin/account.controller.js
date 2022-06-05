@@ -1,16 +1,73 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const {student} = require("../../models/student/student.schema")
+const {admin} = require("../../models/admin/admin.schema")
 const mongoose = require("mongoose")
 
-const studentController = {
-    changePicture : async (req, res) => {
-        try{
-            const avatar = req.files[0] || []
+const adminController = {
+    paginate : async (req, res) => {
+        const page = req.query.page || 1 
 
-            const entry = await student.findOneAndUpdate(
-                {_id : req.user.id},
-                { avatar },
+        try{
+            const options = {
+                sort: { date_created: "desc" },
+                page,
+                limit : req.body.recordsToShow || 25,
+            }
+
+            let query = {
+                role : req.body.role,
+                status : req.body.status || ""
+            }
+
+            if(req.query.search){
+                let regex = new RegExp( req.body.search, 'i' )
+                query = {
+                    ...query,
+                    $and: [ {
+                        $or: [
+                            { fullname: regex },
+                            { email: regex }
+                        ]
+                    } ],
+                }
+            }
+
+            if(!req.query.roles) delete query["role"]
+            if(!req.query.status || req.query.status == 'ALL' ) delete query[ "status" ]
+            
+            const entry = await admin.paginate(query,options)
+
+            return res.json({status:true, data: entry})
+        }
+        catch(error){
+            console.log(error)
+            return res.json({status: false, error})
+        }
+    },
+    changeUserDetails : async (req, res) => {
+        try{
+            const data = req.body
+            if(!data.id) throw "User id is required"
+            if(!data.email) throw "Email is required"
+            if(!data.fullname) throw "Fullname is required"
+
+            const validateEmail = await admin.findOne({
+                email : data.email,
+                _id : {
+                    $ne : data.id
+                }
+            })
+
+            if(validateEmail) throw "Email is already taken."
+
+            const entry = await admin.findOneAndUpdate(
+                {_id : data.id},
+                {
+                    email : data.email,
+                    fullname : data.fullname,
+                    role : data.role || "ADMIN",
+                    status : data.status || "ACTIVE"
+                },
                 {new : true}
             )
 
@@ -18,7 +75,7 @@ const studentController = {
         }
         catch(error){
             console.log(error)
-            return res.json({status: false, error})
+            return res.json({status : false, error})
         }
     },
     changeProfile : async (req, res) => {
@@ -27,7 +84,7 @@ const studentController = {
             if(!data.email) throw "Email is required"
             if(!data.fullname) throw "Fullname is required"
 
-            const validateEmail = await student.findOne({
+            const validateEmail = await admin.findOne({
                 email : data.email,
                 _id : {
                     $ne : req.user.id
@@ -36,7 +93,7 @@ const studentController = {
 
             if(validateEmail) throw "Email is already taken."
 
-            const entry = await student.findOneAndUpdate(
+            const entry = await admin.findOneAndUpdate(
                 {_id : req.user.id},
                 {
                     email : data.email,
@@ -62,7 +119,7 @@ const studentController = {
 
             const password = await bcrypt.hash(data.new_password,10)
 
-            const entry = await student.findOneAndUpdate(
+            const entry = await admin.findOneAndUpdate(
                 {_id : req.user.id},
                 {password},
                 {new : true}
@@ -87,18 +144,16 @@ const studentController = {
             if(!data.email) throw "Email is required!"
             if(!data.fullname) throw "Fullname is required!"
 
-            const count = await student.find({}).count()
-            const student_id = (count + 1).toString().padStart(4,"0")
             const password = await bcrypt.hash(data.password, 10)
 
-            const validateEmail = await student.findOne({email:data.email})
+            const validateEmail = await admin.findOne({email:data.email})
             if(validateEmail) throw "Email is already taken."
 
-            const entry = await student.create([{
+            const entry = await admin.create([{
                 email : data.email,
                 password,
-                student_id,
-                fullname : data.fullname
+                fullname : data.fullname,
+                role : data.role || "ADMIN"
             }])
 
             await session.commitTransaction()
@@ -120,7 +175,7 @@ const studentController = {
 
             const plainTextPassword = req.body.password
 
-            const entry = await student.findOne({ email : req.body.email }).lean()
+            const entry = await admin.findOne({ email : req.body.email }).lean()
 
             if(!entry) throw "Invalid credentials"
             if(entry.status != "ACTIVE") throw "Your account is deactivated"
@@ -129,8 +184,7 @@ const studentController = {
                 const token = jwt.sign({
                     id : entry._id,
                     email : entry.email,
-                    student_id : entry.student_id,
-                    role : "STUDENT",
+                    role : entry.role,
                     fullname : entry.fullname,
                     refreshToken : entry.refreshToken,
                     status : entry.status
@@ -155,4 +209,4 @@ const studentController = {
     },
 }
 
-module.exports = studentController
+module.exports = adminController
