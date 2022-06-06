@@ -6,15 +6,23 @@ const classes = new Schema(
   {
     code: { type: String, unique: true },
     name: { type: String, minlength: 3, maxlength: 255 },
-    description: { type: String, minlength: 3, maxlength: 255 },
     teacher: { type: Schema.Types.ObjectId, ref: "teacher" },
+    status: {
+      type: String,
+      default: "ACTIVE",
+      uppercase: true,
+      enum: {
+        values: ["ACTIVE", "INACTIVE"],
+        message: "Invalid Status",
+      },
+    },
     lessons: [
       {
         type: Schema.Types.ObjectId,
         ref: "lesson",
       },
     ],
-    enrolled: [
+    students: [
       {
         student: { type: Schema.Types.ObjectId, ref: "student" },
         status: { type: String, default: "PENDING" },
@@ -72,6 +80,7 @@ const classes = new Schema(
             attempt: { type: Number },
             total_score: { type: Number },
             status: {
+              type: String,
               uppercase: true,
               enum: {
                 values: ["PASS", "FAILED"],
@@ -87,6 +96,7 @@ const classes = new Schema(
                     question_number: { type: Number },
                     question: { type: String, minlength: 3, maxlength: 255 },
                     mark: {
+                      type: String,
                       uppercase: true,
                       enum: {
                         values: ["CORRECT", "INCORRECT"],

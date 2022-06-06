@@ -191,7 +191,7 @@ const studentController = {
 
     try {
       const options = {
-        sort: { date_created: "desc" },
+        sort: { createdAt: "desc" },
         page,
         limit: req.body.count || 25,
       };

@@ -35,7 +35,10 @@ connection.once("open", () => console.log("connected to mongoDB : " + db));
 
 app.get("/test", async (req, res) => {
   try {
-    return res.json({ status: true, data: "Server working perfectly fine." });
+    return res.json({
+      status: true,
+      data: "Server working perfectly fine.",
+    });
   } catch (error) {
     console.log(error);
     return res.json({ status: true, error });
@@ -61,8 +64,11 @@ app.post("/api/logout", logged, (req, res) => {
   return res.json({ status: true, message: "Logged out" });
 });
 
-app.use("/api/admin", require("./routes/admin/routes"));
-app.use("/api/teacher", require("./routes/teacher/routes"));
-app.use("/api/student", require("./routes/student/routes"));
+app.use("/api/admins", require("./routes/admin/routes"));
+app.use("/api/teachers", require("./routes/teacher/routes"));
+app.use("/api/students", require("./routes/student/routes"));
+
+app.use("/api/classes", require("./routes/class/routes"));
+// app.use("/api/lessons", require("./routes/class/routes"));
 
 server.listen(port, () => console.log(`server runs at ${port}`));

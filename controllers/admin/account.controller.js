@@ -11,7 +11,7 @@ const adminController = {
       if (req.user.role != "ADMIN") throw "You are not an admin";
 
       const options = {
-        sort: { date_created: "desc" },
+        sort: { createdAt: "desc" },
         page,
         limit: req.body.count || 25,
       };
