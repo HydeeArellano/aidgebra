@@ -69,6 +69,14 @@ app.use("/api/teachers", require("./routes/teacher/routes"));
 app.use("/api/students", require("./routes/student/routes"));
 
 app.use("/api/classes", require("./routes/class/routes"));
-// app.use("/api/lessons", require("./routes/class/routes"));
+// app.use("/api/classroom/", require("./routes/classroom/routes"));
+app.use("/api/lessons", require("./routes/class/lesson/routes"));
+// app.use("/api/pretest", require("./routes/class/lesson/pretest/routes"));
+// app.use("/api/posttest", require("./routes/class/lesson/postest/routes"));
+// app.use("/api/concepts", require("./routes/class/lesson/concept/routes"));
+// app.use("/api/lectures", require("./routes/class/lesson/concept/lecture/routes"));
+// app.use("/api/questions", require("./routes/class/lesson/concept/question/routes"));
+
+// app.use("/api/monitoring", require("./routes/monitoring/routes"));
 
 server.listen(port, () => console.log(`server runs at ${port}`));
