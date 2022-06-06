@@ -73,7 +73,7 @@ app.use("/api/classes", require("./routes/class/routes"));
 app.use("/api/lessons", require("./routes/class/lesson/routes"));
 // app.use("/api/pretest", require("./routes/class/lesson/pretest/routes"));
 // app.use("/api/posttest", require("./routes/class/lesson/postest/routes"));
-// app.use("/api/concepts", require("./routes/class/lesson/concept/routes"));
+app.use("/api/concepts", require("./routes/class/lesson/concept/routes"));
 // app.use("/api/lectures", require("./routes/class/lesson/concept/lecture/routes"));
 // app.use("/api/questions", require("./routes/class/lesson/concept/question/routes"));
 

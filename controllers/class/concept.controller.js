@@ -1,21 +1,21 @@
-const { classes } = require("../../models/classes/classes.schema");
 const { lesson } = require("../../models/classes/lesson.schema");
+const { concept } = require("../../models/classes/concept.schema");
 const generator = require("../../helpers/code-generator");
 
 const mongoose = require("mongoose");
 
-const lessonController = {
+const conceptController = {
   all: async (req, res) => {
     try {
       if (req.user.role != "ADMIN") throw "You are not an admin";
 
       const filter = {};
 
-      if (req.query.class) {
-        filter.class = req.query.class;
+      if (req.query.lesson) {
+        filter.lesson = req.query.lesson;
       }
 
-      const entry = await lesson.find(filter);
+      const entry = await concept.find(filter);
 
       return res.json({ status: true, data: entry });
     } catch (error) {
@@ -27,7 +27,7 @@ const lessonController = {
     try {
       if (req.user.role != "ADMIN") throw "You are not an admin";
 
-      const entry = await lesson.findOne({ _id: req.params.id });
+      const entry = await concept.findOne({ _id: req.params.id });
 
       return res.json({ status: true, data: entry });
     } catch (error) {
@@ -45,21 +45,23 @@ const lessonController = {
       if (req.user.role != "ADMIN") throw "You are not an admin";
 
       if (!data.name) throw "Name is required!";
-      if (!data.class) throw "Class is required!";
+      if (!data.lesson) throw "Lesson is required!";
       if (!data.order) throw " Order is required!";
 
-      const entry = await lesson.create([
+      const lessonEntry = await lesson.findOne({ _id: data.lesson });
+      if (lessonEntry.concepts.length >= 5)
+        throw "Lesson has reached maximum number of concepts!";
+
+      const entry = await concept.create([
         {
           name: data.name,
-          class: data.class,
-          lessonOrder: data.order,
+          lesson: data.lesson,
+          conceptOrder: data.order,
         },
       ]);
-      console.log(entry);
-      const classEntry = await classes.findOne({ _id: data.class });
-      classEntry.lessons.push(entry._id);
-      await classEntry.save();
-      console.log(classEntry);
+
+      lessonEntry.concepts.push(entry._id);
+      lessonEntry.save();
 
       await session.commitTransaction();
       return res.json({ status: true, data: entry });
@@ -79,14 +81,12 @@ const lessonController = {
 
       if (!data.name) throw "Name is required!";
       if (!data.order) throw " Order is required!";
-      if (!data.status) throw " Status is required!";
 
-      const entry = await lesson.findOneAndUpdate(
+      const entry = await concept.findOneAndUpdate(
         { _id: req.params.id },
         {
           name: data.name,
-          lessonOrder: data.order,
-          status: data.status,
+          conceptOrder: data.order,
         },
         { new: true }
       );
@@ -106,16 +106,16 @@ const lessonController = {
 
       if (req.user.role != "ADMIN") throw "You are not an admin";
 
-      // swap the order of two lessons
-      const entry = await lesson.findOneAndUpdate(
+      // swap the order of two concepts
+      const entry = await concept.findOneAndUpdate(
         { _id: data.first_id },
-        { lessonOrder: data.second_order },
+        { conceptOrder: data.second_order },
         { new: true }
       );
 
-      const entry2 = await lesson.findOneAndUpdate(
+      const entry2 = await concept.findOneAndUpdate(
         { _id: data.second_id },
-        { lessonOrder: data.first_order },
+        { conceptOrder: data.first_order },
         { new: true }
       );
 
@@ -131,4 +131,4 @@ const lessonController = {
   },
 };
 
-module.exports = lessonController;
+module.exports = conceptController;

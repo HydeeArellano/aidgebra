@@ -7,6 +7,15 @@ const lesson = new Schema(
     name: { type: String, minlength: 3, maxlength: 255 },
     class: { type: Schema.Types.ObjectId, ref: "classes" },
     lessonOrder: { type: Number, default: 1, min: 1 },
+    status: {
+      type: String,
+      default: "ACTIVE",
+      uppercase: true,
+      enum: {
+        values: ["ACTIVE", "INACTIVE"],
+        message: "Invalid Status",
+      },
+    },
     pretest: [
       {
         type: Schema.Types.ObjectId,
