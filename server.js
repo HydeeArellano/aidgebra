@@ -7,6 +7,7 @@ const app = express();
 const server = require("http").createServer(app);
 const port = process.env.PORT || 3001;
 const mongoose = require("mongoose");
+const auth = require("./middlewares/auth.middleware");
 const logged = require("./middlewares/logged.middleware");
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,10 +42,20 @@ app.get("/test", async (req, res) => {
   }
 });
 
+app.get("/me", auth, async (req, res) => {
+  try {
+    return res.json({ status: true, data: req.user });
+  } catch (error) {
+    console.log(error);
+    return res.json({ status: true, error });
+  }
+});
+
 app.post("/api/logout", logged, (req, res) => {
   if (req.islogged == false) {
     return res.json({ status: false, message: "Not logged in" });
   }
+
   res.cookie("token", "", { maxAge: 1 });
 
   return res.json({ status: true, message: "Logged out" });

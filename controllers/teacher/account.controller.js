@@ -232,7 +232,7 @@ const teacherController = {
     try {
       session.startTransaction();
 
-      // if (req.user.role != "ADMIN") throw "You are not an admin";
+      if (req.user.role != "ADMIN") throw "You are not an admin";
 
       if (!data.password) throw "Password is required!";
       if (data.password != data.confirm_password) throw "Password not match!";
