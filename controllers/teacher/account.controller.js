@@ -1,16 +1,16 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { student } = require("../../models/student/student.schema");
+const { teacher } = require("../../models/teacher/teacher.schema");
 const mongoose = require("mongoose");
 
-const studentController = {
+const teacherController = {
   changePicture: async (req, res) => {
     try {
       const avatar = req.files[0] || [];
 
-      if (req.user.role != "STUDENT") throw "You are not a student";
+      if (req.user.role != "TEACHER") throw "You are not a teacher";
 
-      const entry = await student.findOneAndUpdate(
+      const entry = await teacher.findOneAndUpdate(
         { _id: req.user.id },
         { avatar },
         { new: true }
@@ -29,9 +29,9 @@ const studentController = {
       if (!data.fullname) throw "Fullname is required";
       if (!data.contact) throw "Contact Number is required";
 
-      if (req.user.role != "STUDENT") throw "You are not a student";
+      if (req.user.role != "TEACHER") throw "You are not a teacher";
 
-      const validateEmail = await student.findOne({
+      const validateEmail = await teacher.findOne({
         email: data.email,
         _id: {
           $ne: req.user.id,
@@ -40,7 +40,7 @@ const studentController = {
 
       if (validateEmail) throw "Email is already taken.";
 
-      const entry = await student.findOneAndUpdate(
+      const entry = await teacher.findOneAndUpdate(
         { _id: req.user.id },
         {
           email: data.email,
@@ -60,7 +60,7 @@ const studentController = {
     try {
       const data = req.body;
 
-      if (req.user.role != "STUDENT") throw "You are not a student";
+      if (req.user.role != "TEACHER") throw "You are not a teacher";
 
       if (!data.new_password) throw "Please enter your new Password";
       if (!data.confirm_password) throw "Please confirm new password";
@@ -69,7 +69,7 @@ const studentController = {
 
       const password = await bcrypt.hash(data.new_password, 10);
 
-      const entry = await student.findOneAndUpdate(
+      const entry = await teacher.findOneAndUpdate(
         { _id: req.user.id },
         { password },
         { new: true }
@@ -96,18 +96,18 @@ const studentController = {
       if (!data.email) throw "Email is required!";
       if (!data.fullname) throw "Fullname is required!";
 
-      const count = await student.find({}).count();
-      const student_id = (count + 1).toString().padStart(4, "0");
+      const count = await teacher.find({}).count();
+      const teacher_id = (count + 1).toString().padStart(4, "0");
       const password = await bcrypt.hash(data.password, 10);
 
-      const validateEmail = await student.findOne({ email: data.email });
+      const validateEmail = await teacher.findOne({ email: data.email });
       if (validateEmail) throw "Email is already taken.";
 
-      const entry = await student.create([
+      const entry = await teacher.create([
         {
           email: data.email,
           password,
-          student_id,
+          teacher_id,
           fullname: data.fullname,
         },
       ]);
@@ -132,7 +132,7 @@ const studentController = {
 
       const plainTextPassword = req.body.password;
 
-      const entry = await student.findOne({ email: req.body.email }).lean();
+      const entry = await teacher.findOne({ email: req.body.email }).lean();
 
       if (!entry) throw "Invalid credentials";
       if (entry.status != "ACTIVE") throw "Your account is deactivated";
@@ -142,8 +142,8 @@ const studentController = {
           {
             id: entry._id,
             email: entry.email,
-            student_id: entry.student_id,
-            role: "STUDENT",
+            teacher_id: entry.teacher_id,
+            role: "TEACHER",
             fullname: entry.fullname,
             refreshToken: entry.refreshToken,
             status: entry.status,
@@ -168,7 +168,7 @@ const studentController = {
   },
   all: async (req, res) => {
     try {
-      const entry = await student.find({});
+      const entry = await teacher.find({});
 
       return res.json({ status: true, data: entry });
     } catch (error) {
@@ -178,7 +178,7 @@ const studentController = {
   },
   view: async (req, res) => {
     try {
-      const entry = await student.findOne({ _id: req.params.id });
+      const entry = await teacher.findOne({ _id: req.params.id });
 
       return res.json({ status: true, data: entry });
     } catch (error) {
@@ -217,7 +217,7 @@ const studentController = {
       if (!req.query.status || req.query.status == "ALL")
         delete query["status"];
 
-      const entry = await student.paginate(query, options);
+      const entry = await teacher.paginate(query, options);
 
       return res.json({ status: true, data: entry });
     } catch (error) {
@@ -232,25 +232,25 @@ const studentController = {
     try {
       session.startTransaction();
 
-      if (req.user.role != "ADMIN") throw "You are not an admin";
+      // if (req.user.role != "ADMIN") throw "You are not an admin";
 
       if (!data.password) throw "Password is required!";
       if (data.password != data.confirm_password) throw "Password not match!";
       if (!data.email) throw "Email is required!";
       if (!data.fullname) throw "Fullname is required!";
 
-      const count = await student.find({}).count();
-      const student_id = (count + 1).toString().padStart(4, "0");
+      const count = await teacher.find({}).count();
+      const teacher_id = (count + 1).toString().padStart(4, "0");
       const password = await bcrypt.hash(data.password, 10);
 
-      const validateEmail = await student.findOne({ email: data.email });
+      const validateEmail = await teacher.findOne({ email: data.email });
       if (validateEmail) throw "Email is already taken.";
 
-      const entry = await student.create([
+      const entry = await teacher.create([
         {
           email: data.email,
           password,
-          student_id,
+          teacher_id,
           fullname: data.fullname,
         },
       ]);
@@ -267,4 +267,4 @@ const studentController = {
   },
 };
 
-module.exports = studentController;
+module.exports = teacherController;
