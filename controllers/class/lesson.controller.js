@@ -91,6 +91,38 @@ const lessonController = {
       return res.json({ status: false, error });
     }
   },
+  swap: async (req, res) => {
+    const session = await mongoose.startSession();
+    const data = req.body;
+
+    try {
+      session.startTransaction();
+
+      if (req.user.role != "ADMIN") throw "You are not an admin";
+
+      // swap the order of two lessons
+      const entry = await lesson.findOneAndUpdate(
+        { _id: data.first_id },
+        { lessonOrder: data.second_order },
+        { new: true }
+      );
+
+      const entry2 = await lesson.findOneAndUpdate(
+        { _id: data.second_id },
+        { lessonOrder: data.first_order },
+        { new: true }
+      );
+
+      await session.commitTransaction();
+      return res.json({ status: true, message: "swapped" });
+    } catch (error) {
+      console.log(error);
+      await session.abortTransaction();
+      return res.json({ status: false, error });
+    } finally {
+      session.endSession();
+    }
+  },
 };
 
 module.exports = lessonController;
