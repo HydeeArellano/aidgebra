@@ -8,6 +8,7 @@ const admin = new Schema({
     password : { type : String },
     // specifications
     fullname : { type : String },
+    contact: { type: String },
     // customize
     avatar : [],
     role : {
