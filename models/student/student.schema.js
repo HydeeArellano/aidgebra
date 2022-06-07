@@ -15,20 +15,21 @@ const student = new Schema(
     avatar: [],
 
     // contents
-    classes: [
-      {
-        class: { type: Schema.Types.ObjectId, ref: "classes" },
-        status: {
-          type: String,
-          default: "PENDING",
-          uppercase: true,
-          enum: {
-            values: ["PENDING", "ENROLLED", "DROPPED"],
-            message: "Invalid Enrollment Status",
-          },
-        },
-      },
-    ],
+    // Moved to classes
+    // classes: [
+    //   {
+    //     class: { type: Schema.Types.ObjectId, ref: "classes" },
+    //     status: {
+    //       type: String,
+    //       default: "PENDING",
+    //       uppercase: true,
+    //       enum: {
+    //         values: ["PENDING", "ENROLLED", "DROPPED"],
+    //         message: "Invalid Enrollment Status",
+    //       },
+    //     },
+    //   },
+    // ],
     // mod
     refreshToken: { type: String },
     refreshTokenDate: { type: Date },

@@ -14,14 +14,6 @@ const teacher = new Schema(
     // customize
     avatar: [],
 
-    // contents
-    classes: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "classes",
-      },
-    ],
-
     // mod
     refreshToken: { type: String },
     refreshTokenDate: { type: Date },

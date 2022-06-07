@@ -45,6 +45,34 @@ app.get("/test", async (req, res) => {
   }
 });
 
+app.get("/init", async (req, res) => {
+  try {
+    // create admin account
+    const { admin } = require("./models/admin/admin.schema");
+    const bcrypt = require("bcrypt");
+
+    const data = {
+      email: "admin@example.com",
+      password: "admin",
+      fullname: "Admin",
+    };
+    const password = await bcrypt.hash(data.password, 10);
+    const validateEmail = await admin.findOne({ email: data.email });
+    if (validateEmail) throw "Email is already taken.";
+    const entry = await admin.create([
+      {
+        email: data.email,
+        password,
+        fullname: data.fullname,
+      },
+    ]);
+    return res.json({ status: true, data: entry });
+  } catch (error) {
+    console.log(error);
+    return res.json({ status: false, error });
+  }
+});
+
 app.get("/me", auth, async (req, res) => {
   try {
     return res.json({ status: true, data: req.user });
@@ -74,7 +102,10 @@ app.use("/api/lessons", require("./routes/class/lesson/routes"));
 // app.use("/api/pretest", require("./routes/class/lesson/pretest/routes"));
 // app.use("/api/posttest", require("./routes/class/lesson/postest/routes"));
 app.use("/api/concepts", require("./routes/class/lesson/concept/routes"));
-// app.use("/api/lectures", require("./routes/class/lesson/concept/lecture/routes"));
+app.use(
+  "/api/lectures",
+  require("./routes/class/lesson/concept/lecture/routes")
+);
 // app.use("/api/questions", require("./routes/class/lesson/concept/question/routes"));
 
 // app.use("/api/monitoring", require("./routes/monitoring/routes"));

@@ -170,7 +170,7 @@ const adminController = {
     try {
       session.startTransaction();
 
-      if (req.user.role != "ADMIN") throw "You are not an admin";
+      // if (req.user.role != "ADMIN") throw "You are not an admin";
 
       if (!data.password) throw "Password is required!";
       if (data.password != data.confirm_password) throw "Password not match!";
@@ -182,14 +182,17 @@ const adminController = {
       const validateEmail = await admin.findOne({ email: data.email });
       if (validateEmail) throw "Email is already taken.";
 
-      const entry = await admin.create([
-        {
-          email: data.email,
-          password,
-          fullname: data.fullname,
-          role: data.role || "ADMIN",
-        },
-      ]);
+      const entry = await admin.create(
+        [
+          {
+            email: data.email,
+            password,
+            fullname: data.fullname,
+            role: data.role || "ADMIN",
+          },
+        ],
+        { session }
+      );
 
       await session.commitTransaction();
       return res.json({ status: true, data: entry });

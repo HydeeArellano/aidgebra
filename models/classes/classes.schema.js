@@ -25,7 +25,15 @@ const classes = new Schema(
     students: [
       {
         student: { type: Schema.Types.ObjectId, ref: "student" },
-        status: { type: String, default: "PENDING" },
+        status: {
+          type: String,
+          default: "PENDING",
+          uppercase: true,
+          enum: {
+            values: ["PENDING", "ENROLLED", "DROPPED"],
+            message: "Invalid Enrollment Status",
+          },
+        },
         completed_lessons: [{ type: Schema.Types.ObjectId, ref: "lesson" }],
         alt_concept_lectures: [{ type: Schema.Types.ObjectId, ref: "concept" }],
         pretest_score: {

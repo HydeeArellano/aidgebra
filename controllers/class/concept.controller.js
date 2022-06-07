@@ -52,16 +52,23 @@ const conceptController = {
       if (lessonEntry.concepts.length >= 5)
         throw "Lesson has reached maximum number of concepts!";
 
-      const entry = await concept.create([
-        {
-          name: data.name,
-          lesson: data.lesson,
-          conceptOrder: data.order,
-        },
-      ]);
+      const entry = await concept.create(
+        [
+          {
+            name: data.name,
+            lesson: data.lesson,
+            conceptOrder: data.order,
+          },
+        ],
+        { session }
+      );
 
-      lessonEntry.concepts.push(entry._id);
-      lessonEntry.save();
+      const id = entry[0]._id;
+      await lesson.findOneAndUpdate(
+        { _id: data.lesson },
+        { $push: { concepts: id } },
+        { new: true, session }
+      );
 
       await session.commitTransaction();
       return res.json({ status: true, data: entry });
@@ -80,13 +87,11 @@ const conceptController = {
       if (req.user.role != "ADMIN") throw "You are not an admin";
 
       if (!data.name) throw "Name is required!";
-      if (!data.order) throw " Order is required!";
 
       const entry = await concept.findOneAndUpdate(
         { _id: req.params.id },
         {
           name: data.name,
-          conceptOrder: data.order,
         },
         { new: true }
       );
@@ -110,13 +115,13 @@ const conceptController = {
       const entry = await concept.findOneAndUpdate(
         { _id: data.first_id },
         { conceptOrder: data.second_order },
-        { new: true }
+        { new: true, session }
       );
 
       const entry2 = await concept.findOneAndUpdate(
         { _id: data.second_id },
         { conceptOrder: data.first_order },
-        { new: true }
+        { new: true, session }
       );
 
       await session.commitTransaction();
