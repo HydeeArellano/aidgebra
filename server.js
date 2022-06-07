@@ -99,7 +99,7 @@ app.use("/api/students", require("./routes/student/routes"));
 app.use("/api/classes", require("./routes/class/routes"));
 // app.use("/api/classroom/", require("./routes/classroom/routes"));
 app.use("/api/lessons", require("./routes/class/lesson/routes"));
-// app.use("/api/pretest", require("./routes/class/lesson/pretest/routes"));
+app.use("/api/pretest", require("./routes/class/lesson/pretest/routes"));
 // app.use("/api/posttest", require("./routes/class/lesson/postest/routes"));
 app.use("/api/concepts", require("./routes/class/lesson/concept/routes"));
 app.use(

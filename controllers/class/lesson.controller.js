@@ -22,7 +22,9 @@ const lessonController = {
   },
   view: async (req, res) => {
     try {
-      const entry = await lesson.findOne({ _id: req.params.id });
+      const entry = await lesson
+        .findOne({ _id: req.params.id })
+        .populate("concepts");
 
       return res.json({ status: true, data: entry });
     } catch (error) {
@@ -132,3 +134,186 @@ const lessonController = {
 };
 
 module.exports = lessonController;
+
+// const arra = {
+//   "question1": {
+//     "question": "2 + 2 is 4, Minus 1 = ?",
+//     "difficulty": "easy",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "a"
+//   },
+//   "question2": {
+//     "question": "2 + 2 is 4, Minus 2 = ?",
+//     "difficulty": "hard",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "b"
+//   },
+//   "question3": {
+//     "question": "2 + 2 is 4, Minus 3 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "d"
+//   },
+//   "question4": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+//   "question5": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+//   "question6": {
+//     "question": "2 + 2 is 4, Minus 1 = ?",
+//     "difficulty": "easy",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "a"
+//   },
+//   "question7": {
+//     "question": "2 + 2 is 4, Minus 2 = ?",
+//     "difficulty": "hard",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "b"
+//   },
+//   "question8": {
+//     "question": "2 + 2 is 4, Minus 3 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "d"
+//   },
+//   "question9": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+//   "question10": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+//   "question11": {
+//     "question": "2 + 2 is 4, Minus 1 = ?",
+//     "difficulty": "easy",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "a"
+//   },
+//   "question12": {
+//     "question": "2 + 2 is 4, Minus 2 = ?",
+//     "difficulty": "hard",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "b"
+//   },
+//   "question13": {
+//     "question": "2 + 2 is 4, Minus 3 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "d"
+//   },
+//   "question14": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+//   "question15": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+//   "question16": {
+//     "question": "2 + 2 is 4, Minus 1 = ?",
+//     "difficulty": "easy",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "a"
+//   },
+//   "question17": {
+//     "question": "2 + 2 is 4, Minus 2 = ?",
+//     "difficulty": "hard",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "b"
+//   },
+//   "question18": {
+//     "question": "2 + 2 is 4, Minus 3 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "d"
+//   },
+//   "question19": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+//   "question20": {
+//     "question": "2 + 2 is 4, Minus 0 = ?",
+//     "difficulty": "average",
+//     "choiceA": "3",
+//     "choiceB": "2",
+//     "choiceC": "4",
+//     "choiceD": "1",
+//     "answer": "c"
+//   },
+// }
