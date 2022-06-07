@@ -1,6 +1,5 @@
 const { classes } = require("../../models/classes/classes.schema");
 const { lesson } = require("../../models/classes/lesson.schema");
-const generator = require("../../helpers/code-generator");
 
 const mongoose = require("mongoose");
 
@@ -89,7 +88,7 @@ const lessonController = {
           name: data.name,
           status: data.status,
         },
-        { new: true }
+        { new: true, runValidators: true }
       );
 
       return res.json({ status: true, data: entry });

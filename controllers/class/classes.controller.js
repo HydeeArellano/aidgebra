@@ -55,7 +55,31 @@ const classesController = {
   },
   view: async (req, res) => {
     try {
-      const entry = await classes.findOne({ _id: req.params.id });
+      const entry = await classes
+        .findOne({ _id: req.params.id })
+        .populate("teacher")
+        .populate([
+          {
+            path: "lessons",
+            populate: [
+              {
+                path: "concepts",
+              },
+              {
+                path: "pretest",
+              },
+              {
+                path: "posttest",
+              },
+            ],
+          },
+          {
+            path: "students",
+            populate: {
+              path: "student",
+            },
+          },
+        ]);
 
       return res.json({ status: true, data: entry });
     } catch (error) {
@@ -121,7 +145,7 @@ const classesController = {
           teacher: data.teacher,
           status: data.status,
         },
-        { new: true }
+        { new: true, runValidators: true }
       );
 
       return res.json({ status: true, data: entry });

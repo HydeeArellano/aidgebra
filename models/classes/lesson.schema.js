@@ -16,23 +16,16 @@ const lesson = new Schema(
         message: "Invalid Status",
       },
     },
-    pretest: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "pretest",
-      },
-    ],
-    concepts: [
-      {
-        concept: { type: Schema.Types.ObjectId, ref: "concept" },
-      },
-    ],
-    posttest: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "posttest",
-      },
-    ],
+    pretest: {
+      type: Schema.Types.ObjectId,
+      ref: "pretest",
+    },
+
+    concepts: [{ type: Schema.Types.ObjectId, ref: "concept" }],
+    posttest: {
+      type: Schema.Types.ObjectId,
+      ref: "posttest",
+    },
   },
   { timestamps: true }
 );

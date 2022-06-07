@@ -4,17 +4,28 @@ const Schema = mongoose.Schema;
 
 const question = new Schema(
   {
-    concept: { type: Schema.Types.ObjectId, ref: "concept" },
-    question_number: { type: Number },
-
     question: { type: String, minlength: 3, maxlength: 255 },
-    choices: [
-      {
-        text: { type: String, minlength: 3, maxlength: 255 },
-        value: { type: String, minlength: 1, maxlength: 1 },
-      },
-    ],
-    answer: { type: String, minlength: 1, maxlength: 1 },
+
+    isDeleted: { type: Boolean, default: false },
+
+    choiceA: {
+      text: { type: String, minlength: 1, maxlength: 255 },
+      value: { type: String, default: "A" },
+    },
+    choiceB: {
+      text: { type: String, minlength: 1, maxlength: 255 },
+      value: { type: String, default: "B" },
+    },
+    choiceC: {
+      text: { type: String, minlength: 1, maxlength: 255 },
+      value: { type: String, default: "C" },
+    },
+    choiceD: {
+      text: { type: String, minlength: 1, maxlength: 255 },
+      value: { type: String, default: "D" },
+    },
+
+    answer: { type: String, uppercase: true, enum: ["A", "B", "C", "D"] },
 
     difficulty: {
       type: String,

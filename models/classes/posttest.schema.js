@@ -10,8 +10,8 @@ const posttest = new Schema(
         concept: { type: Schema.Types.ObjectId, ref: "concept" },
         questions: [
           {
-            type: Schema.Types.ObjectId,
-            ref: "question",
+            question: { type: Schema.Types.ObjectId, ref: "question" },
+            order: { type: Number, min: 1, max: 4 },
           },
         ],
       },

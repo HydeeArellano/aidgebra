@@ -106,7 +106,10 @@ app.use(
   "/api/lectures",
   require("./routes/class/lesson/concept/lecture/routes")
 );
-// app.use("/api/questions", require("./routes/class/lesson/concept/question/routes"));
+app.use(
+  "/api/questions",
+  require("./routes/class/lesson/concept/question/routes")
+);
 
 // app.use("/api/monitoring", require("./routes/monitoring/routes"));
 
